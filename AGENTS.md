@@ -37,6 +37,7 @@ Always read `README.md` first — it contains the current project goals, archite
 | `android/app/src/main/kotlin/com/cait/auto/CaitCarAppService.kt` | Android Auto entry point |
 | `android/app/src/main/kotlin/com/cait/auto/CaitScreen.kt` | Main UI with voice button |
 | `android/app/src/main/kotlin/com/cait/auto/ApprovalScreen.kt` | Tool approval UI |
+| `android/app/src/main/kotlin/com/cait/auto/AgentClient.kt` | SSE client for AG-UI backend |
 | `backend/cait_backend/server.py` | FastAPI + AG-UI endpoint |
 | `backend/cait_backend/agent.py` | LangGraph agent definition |
 | `backend/cait_backend/tools/google_drive.py` | write_document tool |
