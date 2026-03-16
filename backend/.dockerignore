@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+token.json
+credentials.json
+tests/
+.ruff_cache/

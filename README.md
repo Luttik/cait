@@ -70,6 +70,13 @@ poetry install
 poetry run uvicorn cait_backend.server:app --reload
 ```
 
+Or run with Docker:
+
+```bash
+docker pull ghcr.io/luttik/cait/backend:latest
+docker run -p 8000:8000 -e OPENAI_API_KEY=sk-... ghcr.io/luttik/cait/backend:latest
+```
+
 ### Android App
 
 ```bash
