@@ -1,0 +1,14 @@
+---
+description: Project context and conventions for Cait — the AI car assistant
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Cait Project Context
+
+Always read and consider `README.md` at the project root — it describes the project's goal, architecture, current scope, and tech stack.
+
+When a conversation results in changes to the project's architecture, features, setup instructions, or roadmap, update `README.md` to reflect those changes.
+
+Also read `AGENTS.md` for coding conventions and key file locations.
