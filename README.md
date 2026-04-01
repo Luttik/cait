@@ -33,16 +33,19 @@ It ships as an **Android Auto** application. You press a voice button, speak a r
 
 ```
 cait/
-├── android/            # Android Auto app (Kotlin + Gradle)
+├── android/            # Android Auto app (Kotlin + Gradle) — runnable Car App Library demo
 │   ├── app/
 │   └── build.gradle.kts
-├── backend/            # Python backend (Poetry)
+├── demo-environment/   # Agent bootstrap + link to Google car-samples
+├── backend/            # Python backend (Poetry) — planned
 │   ├── cait_backend/
 │   └── pyproject.toml
 ├── scripts/            # Environment setup helpers
 ├── AGENTS.md           # Instructions for AI coding agents
 └── README.md           # ← you are here
 ```
+
+The **Kotlin** scaffold under `android/` is the boilerplate for Android Auto work. For full Google-maintained examples, clone [android/car-samples](https://github.com/android/car-samples) (see `demo-environment/scripts/clone-car-samples.sh`).
 
 ## Prerequisites
 
@@ -63,13 +66,17 @@ poetry run uvicorn cait_backend.server:app --reload
 
 ### Android App
 
+**Windows (PowerShell):** set `ANDROID_HOME`, then `cd android` and `.\gradlew.bat :app:assembleDebug` (or `installDebug` with a device).
+
 ```bash
 cd android
-./gradlew installDebug
+./gradlew :app:assembleDebug
 # Then start the DHU:
 adb forward tcp:5277 tcp:5277
 desktop-head-unit
 ```
+
+Optional: `./demo-environment/scripts/bootstrap.sh` checks `ANDROID_HOME` and runs the same Gradle task.
 
 ## Roadmap
 

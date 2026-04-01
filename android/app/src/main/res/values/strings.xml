@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cait Demo</string>
+    <string name="demo_title">Cait demo</string>
+    <string name="demo_body">Kotlin Android Auto scaffold. Compare with Google android/car-samples.</string>
+    <string name="action_refresh">Refresh</string>
+</resources>
