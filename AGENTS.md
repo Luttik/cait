@@ -56,17 +56,51 @@ Always read `README.md` first — it contains the current project goals, archite
 | Service | How to run | Notes |
 |---------|-----------|-------|
 | **Python backend** | `cd backend && poetry run uvicorn cait_backend.server:app --reload` | Serves on port 8000. Health check: `GET /health`. AG-UI agent endpoint: `POST /agent`. |
-| **Android app** | `cd android && ./gradlew build` | Build-only in Cloud VMs (no emulator/DHU). Requires `ANDROID_HOME` set to an SDK with platform 35. |
+| **Android app (build)** | `cd android && ./gradlew build` | Requires `ANDROID_HOME=$HOME/android-sdk`. |
+| **Android app (install on emulator)** | `cd android && ./gradlew installDebug` | Requires a running emulator (see below). |
 
 ### Running checks
 
-- **Lint**: `cd backend && poetry run ruff check . && poetry run ruff format --check .`
-- **Tests**: `cd backend && poetry run pytest -v`
+- **Backend lint**: `cd backend && poetry run ruff check . && poetry run ruff format --check .`
+- **Backend tests**: `cd backend && poetry run pytest -v`
 - **Android build**: `cd android && ./gradlew build`
+- **Android unit tests (fast, JVM)**: `cd android && ./gradlew testDebugUnitTest` — runs Robolectric + MockWebServer tests, no emulator needed.
+
+### Android emulator in Cloud VMs (no KVM)
+
+Cloud VMs do not have KVM. The emulator runs in software-only mode (`-no-accel`) which is slow (~9 min cold boot) but functional.
+
+**Start the emulator:**
+```bash
+export ANDROID_HOME="$HOME/android-sdk"
+export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+
+emulator -avd CaitTestDevice -no-window -no-audio -gpu swiftshader_indirect \
+  -no-accel -no-boot-anim -no-snapshot -cores 4 -memory 2048 &
+```
+
+**Wait for boot:**
+```bash
+adb wait-for-device
+while [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" != "1" ]; do sleep 10; done
+echo "Booted"
+```
+
+**Install and verify:**
+```bash
+cd android && ./gradlew installDebug
+adb shell pm list packages | grep cait   # should print: package:com.cait.auto
+```
+
+**Key caveats:**
+- The AVD `CaitTestDevice` (API 35, x86_64) is pre-created. If missing, create it: `echo no | avdmanager create avd -n CaitTestDevice -k "system-images;android-35;google_apis;x86_64"`
+- Cold boot takes ~9 minutes without KVM. Budget for this in your workflow.
+- For **fast feedback**, prefer `./gradlew testDebugUnitTest` (JVM tests, ~3 seconds) over emulator-based testing.
+- The Android Auto Desktop Head Unit (DHU) is not available in Cloud VMs. For Car App UI testing, use the car-app-testing library in JVM unit tests.
 
 ### Environment notes
 
-- The Android SDK is installed at `~/android-sdk`. Set `ANDROID_HOME=$HOME/android-sdk` before running Gradle.
+- `ANDROID_HOME` must be set to `$HOME/android-sdk` for both Gradle and emulator commands.
 - JDK 21 (system default) works fine for this project despite `compileOptions` targeting Java 17.
 - Poetry virtualenvs are stored in `~/.cache/pypoetry/virtualenvs/`.
 - The backend starts without an `OPENAI_API_KEY` (the `/health` endpoint works), but LLM calls via `/agent` require a valid key.
