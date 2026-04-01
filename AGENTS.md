@@ -19,7 +19,7 @@ Always read `README.md` first — it contains the current project goals, archite
 
 - Target Android API 35, min SDK 29
 - Use Kotlin coroutines and Flows for async work
-- Package: `com.cait.auto`
+- Demo scaffold package: `com.cait.auto.demo` (production target: `com.cait.auto`)
 - Follow standard Android project layout under `android/`
 
 ### Python
@@ -34,12 +34,12 @@ Always read `README.md` first — it contains the current project goals, archite
 
 | File | Purpose |
 |------|-------|
-| `android/app/src/main/kotlin/com/cait/auto/CaitCarAppService.kt` | Android Auto entry point |
-| `android/app/src/main/kotlin/com/cait/auto/CaitScreen.kt` | Main UI with voice button |
-| `android/app/src/main/kotlin/com/cait/auto/ApprovalScreen.kt` | Tool approval UI |
-| `backend/cait_backend/server.py` | FastAPI + AG-UI endpoint |
-| `backend/cait_backend/agent.py` | LangGraph agent definition |
-| `backend/cait_backend/tools/google_drive.py` | write_document tool |
+| `android/app/src/main/kotlin/com/cait/auto/demo/DemoCarAppService.kt` | Android Auto demo entry (Car App Library) |
+| `android/app/src/main/kotlin/com/cait/auto/demo/DemoScreen.kt` | Demo pane UI |
+| `demo-environment/README.md` | Agent env + Google car-samples clone instructions |
+| `backend/cait_backend/server.py` | FastAPI + AG-UI endpoint (planned) |
+| `backend/cait_backend/agent.py` | LangGraph agent definition (planned) |
+| `backend/cait_backend/tools/google_drive.py` | write_document tool (planned) |
 
 ## When Making Changes
 
