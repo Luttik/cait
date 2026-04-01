@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+.eggs/
+*.egg
+.venv/
+venv/
+.env
+token.json
+credentials.json
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+*.apk
+*.aab
+
+# OS
+.DS_Store
+Thumbs.db
+
+# pytest
+.pytest_cache/

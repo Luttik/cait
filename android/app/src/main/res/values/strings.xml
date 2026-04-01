@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cait</string>
+    <string name="voice_button_label">Talk to Cait</string>
+    <string name="listening_label">Listening…</string>
+    <string name="thinking_label">Thinking…</string>
+    <string name="approve_title">Approve action?</string>
+    <string name="approve_button">Approve</string>
+    <string name="reject_button">Reject</string>
+</resources>

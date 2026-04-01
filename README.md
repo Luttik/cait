@@ -33,15 +33,24 @@ It ships as an **Android Auto** application. You press a voice button, speak a r
 
 ```
 cait/
-├── android/            # Android Auto app (Kotlin + Gradle)
+├── android/                  # Android Auto app (Kotlin + Gradle)
 │   ├── app/
+│   │   └── src/main/kotlin/com/cait/auto/
+│   │       ├── CaitCarAppService.kt   # Android Auto entry point
+│   │       ├── CaitScreen.kt          # Main UI with voice button
+│   │       ├── ApprovalScreen.kt      # Tool approval UI
+│   │       └── AgentClient.kt         # SSE client for AG-UI backend
 │   └── build.gradle.kts
-├── backend/            # Python backend (Poetry)
+├── backend/                  # Python backend (Poetry)
 │   ├── cait_backend/
+│   │   ├── server.py                  # FastAPI + AG-UI endpoint
+│   │   ├── agent.py                   # LangGraph agent definition
+│   │   └── tools/
+│   │       └── google_drive.py        # write_document tool
+│   ├── tests/
 │   └── pyproject.toml
-├── scripts/            # Environment setup helpers
-├── AGENTS.md           # Instructions for AI coding agents
-└── README.md           # ← you are here
+├── AGENTS.md                 # Instructions for AI coding agents
+└── README.md                 # ← you are here
 ```
 
 ## Prerequisites
@@ -61,6 +70,13 @@ poetry install
 poetry run uvicorn cait_backend.server:app --reload
 ```
 
+Or run with Docker:
+
+```bash
+docker pull ghcr.io/luttik/cait/backend:latest
+docker run -p 8000:8000 -e OPENAI_API_KEY=sk-... ghcr.io/luttik/cait/backend:latest
+```
+
 ### Android App
 
 ```bash
@@ -71,10 +87,20 @@ adb forward tcp:5277 tcp:5277
 desktop-head-unit
 ```
 
+## Running Tests
+
+### Backend
+
+```bash
+cd backend
+poetry run pytest tests/ -v
+poetry run ruff check cait_backend/ tests/
+```
+
 ## Roadmap
 
 - [x] Project scaffolding
-- [ ] Voice input → agent pipeline
-- [ ] Approval UI in Android Auto
-- [ ] Google Drive document creation
+- [x] Voice input → agent pipeline
+- [x] Approval UI in Android Auto
+- [x] Google Drive document creation
 - [ ] Additional tools (calendar, navigation, messaging)
