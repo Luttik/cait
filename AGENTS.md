@@ -48,3 +48,26 @@ Always read `README.md` first — it contains the current project goals, archite
 2. Run `ruff check` and `ruff format` on Python changes.
 3. Run `./gradlew build` to verify Android changes compile.
 4. Add or update tests for new backend functionality.
+
+## Cursor Cloud specific instructions
+
+### Services
+
+| Service | How to run | Notes |
+|---------|-----------|-------|
+| **Python backend** | `cd backend && poetry run uvicorn cait_backend.server:app --reload` | Serves on port 8000. Health check: `GET /health`. AG-UI agent endpoint: `POST /agent`. |
+| **Android app** | `cd android && ./gradlew build` | Build-only in Cloud VMs (no emulator/DHU). Requires `ANDROID_HOME` set to an SDK with platform 35. |
+
+### Running checks
+
+- **Lint**: `cd backend && poetry run ruff check . && poetry run ruff format --check .`
+- **Tests**: `cd backend && poetry run pytest -v`
+- **Android build**: `cd android && ./gradlew build`
+
+### Environment notes
+
+- The Android SDK is installed at `~/android-sdk`. Set `ANDROID_HOME=$HOME/android-sdk` before running Gradle.
+- JDK 21 (system default) works fine for this project despite `compileOptions` targeting Java 17.
+- Poetry virtualenvs are stored in `~/.cache/pypoetry/virtualenvs/`.
+- The backend starts without an `OPENAI_API_KEY` (the `/health` endpoint works), but LLM calls via `/agent` require a valid key.
+- No Google Drive credentials are needed for tests — they mock the Drive API.
