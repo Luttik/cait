@@ -70,7 +70,7 @@ Always read `README.md` first — it contains the current project goals, archite
 
 Cloud VMs do not have KVM. The emulator runs in software-only mode (`-no-accel`) which is slow (~9 min cold boot) but functional.
 
-**Start the emulator:**
+**Start the emulator (headless):**
 ```bash
 export ANDROID_HOME="$HOME/android-sdk"
 export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
@@ -78,6 +78,15 @@ export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
 emulator -avd CaitTestDevice -no-window -no-audio -gpu swiftshader_indirect \
   -no-accel -no-boot-anim -no-snapshot -cores 4 -memory 2048 &
 ```
+
+**Visual access via scrcpy (optional):**
+```bash
+export DISPLAY=:1
+export SCRCPY_SERVER_PATH=/tmp/scrcpy-linux-x86_64-v3.3.4/scrcpy-server
+/tmp/scrcpy-linux-x86_64-v3.3.4/scrcpy --window-title="Android Emulator" \
+  --max-size=800 --stay-awake --no-audio --render-driver=software &
+```
+If scrcpy v3 is not installed, download it: `wget -q https://github.com/Genymobile/scrcpy/releases/download/v3.3.4/scrcpy-linux-x86_64-v3.3.4.tar.gz -O /tmp/scrcpy.tar.gz && tar xzf /tmp/scrcpy.tar.gz -C /tmp/`
 
 **Wait for boot:**
 ```bash
@@ -93,10 +102,12 @@ adb shell pm list packages | grep cait   # should print: package:com.cait.auto
 ```
 
 **Key caveats:**
-- The AVD `CaitTestDevice` (API 35, x86_64) is pre-created. If missing, create it: `echo no | avdmanager create avd -n CaitTestDevice -k "system-images;android-35;google_apis;x86_64"`
-- Cold boot takes ~9 minutes without KVM. Budget for this in your workflow.
+- The AVD `CaitTestDevice` (API 35, google_apis, x86_64) is pre-created. If missing, create it: `echo no | avdmanager create avd -n CaitTestDevice -k "system-images;android-35;google_apis;x86_64"`
+- Cold boot takes ~3.5–9 minutes without KVM.
 - For **fast feedback**, prefer `./gradlew testDebugUnitTest` (JVM tests, ~3 seconds) over emulator-based testing.
-- The Android Auto Desktop Head Unit (DHU) is not available in Cloud VMs. For Car App UI testing, use the car-app-testing library in JVM unit tests.
+- The `google_apis` image ships with a **stub** Android Auto (not the full app). To test the full Android Auto + DHU flow, you would need to sideload the real Android Auto APK (e.g. from APKMirror). The DHU itself is installed at `$ANDROID_HOME/extras/google/auto/desktop-head-unit`.
+- System UI and Pixel Launcher frequently crash without KVM. Use `adb shell svc power stayon true` and `adb shell settings put system screen_off_timeout 2147483647` to keep the screen on. Use `adb shell uiautomator dump` to inspect the UI state reliably even when the display is black.
+- scrcpy v1.25 (apt) is too old for Android 15. Use scrcpy v3+ (pre-downloaded to `/tmp/scrcpy-linux-x86_64-v3.3.4/`).
 
 ### Environment notes
 
